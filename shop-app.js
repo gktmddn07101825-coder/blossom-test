@@ -4,8 +4,9 @@
  const API='https://hweouohzkwqhiwwsjlxu.supabase.co/functions/v1/blossom-rewards';
  const SESSION_KEY='blossom_test_auth_v1';
  const $=id=>document.getElementById(id);
- const kinds=[['all','전체'],['theme','테마'],['nickname','닉네임'],['title','칭호'],['timer','미니 타이머'],['checklist','체크리스트']];
+ const kinds=[['all','전체','🛍️'],['theme','테마','🎨'],['nickname','닉네임','✨'],['title','칭호','🏷️'],['timer','미니 타이머','⏱️'],['checklist','체크리스트','☑️']];
  let state=null, view='shop',category='all', busy=false;
+ const strip=s=>String(s||'').normalize('NFKC').toLocaleLowerCase('ko-KR').replace(/\s+/g,'');
  const own=()=>new Set((state?.inventory||[]).map(x=>x.product_id));
  const wears=()=>Object.fromEntries((state?.equipped||[]).map(x=>[x.category,x.product_id]));
  const escSession=()=>{try{const x=JSON.parse(sessionStorage.getItem(SESSION_KEY)||'null');return x?.access_token&&Number(x.expires_at)>Date.now()/1000+10?x:null}catch{return null}};
@@ -42,11 +43,24 @@
  }
  function mkButton(label,cls,fn,disabled=false){const b=el('button',cls,label);b.type='button';b.disabled=disabled||busy;if(fn)b.addEventListener('click',fn);return b}
  function renderProducts(){
-  const list=$('products');list.replaceChildren();if(!state){list.append(el('div','empty','로그인 후 상품을 확인해 주세요.'));return}
-  const inventory=own(),equipped=wears(),search=$('search').value.trim().toLowerCase();
-  const chosen=(state.products||[]).filter(p=>(category==='all'||p.category===category)&& (view==='shop'||inventory.has(p.id)) && (!search||p.name.toLowerCase().includes(search)||p.description.toLowerCase().includes(search)));
-  $('listingInfo').textContent=(view==='shop'?'판매 중 ':'보유 ') +chosen.length+'개 상품 · 현금 결제 없이 BP로 구매';
-  if(!chosen.length){list.append(el('div','empty',view==='inventory'?'아직 보관함에 해당 상품이 없어요. 출석 포인트로 구매해 보세요!':'검색한 상품이 없어요.'));return}
+  const list=$('products');list.replaceChildren();
+  if(!state){list.append(el('div','empty','로그인 후 상품을 확인해 주세요.'));return}
+  const inventory=own(),equipped=wears(),search=strip($('search').value),balance=Number(state.wallet?.balance||0);
+  let chosen=(state.products||[]).filter(p=>
+   (category==='all'||p.category===category)&&
+   (view==='shop'||inventory.has(p.id))&&
+   (!search||strip([p.name,p.description,p.category,p.id].join(' ')).includes(search))
+  );
+  const sort=$('sortProducts').value;
+  if(sort==='cheap')chosen.sort((a,b)=>a.price-b.price||a.sort_order-b.sort_order);
+  else if(sort==='expensive')chosen.sort((a,b)=>b.price-a.price||a.sort_order-b.sort_order);
+  else if(sort==='name')chosen.sort((a,b)=>a.name.localeCompare(b.name,'ko'));
+  else if(sort==='affordable')chosen.sort((a,b)=>Number(b.price<=balance)-Number(a.price<=balance)||a.price-b.price);
+  else chosen.sort((a,b)=>a.sort_order-b.sort_order);
+  const selectedLabel=kinds.find(k=>k[0]===category)?.[1]||'전체';
+  $('listingInfo').textContent=`${view==='shop'?'판매 상품':'내 보유 상품'} · ${selectedLabel} ${chosen.length}개`+(search?' · 검색 결과':'');
+  $('clearSearch').classList.toggle('hidden',!$('search').value);
+  if(!chosen.length){list.append(el('div','empty',view==='inventory'?'해당 카테고리에 구매한 상품이 없어요. 다른 카테고리를 눌러 보세요!':'검색 결과가 없어요. 검색어 또는 카테고리를 바꿔 보세요.'));return}
   for(const p of chosen){
    const card=el('article','product');card.dataset.id=p.id;card.dataset.type=p.category;
    const preview=el('div','preview');const label=el('span','',previewLabel(p));
@@ -63,10 +77,10 @@
    }else if(inventory.has(p.id)){
     button=mkButton('보관함 보기','btn buy secondary',()=>{view='inventory';setActiveView();renderProducts()});
    }else{
-    button=mkButton('구매','btn buy',()=>{
+    button=mkButton(p.price>balance?'BP 부족':'구매','btn buy',()=>{
      if(!window.confirm(`${p.name}을(를) ${p.price} BP로 구매할까요?`))return;
      mutation({action:'buy',product_id:p.id});
-    });
+    },p.price>balance);
    }
    foot.append(button);body.append(foot);card.append(body);list.append(card);
   }
@@ -86,7 +100,11 @@
   const today=state.today_kst;
   const checked=history.some(row=>row.day_kst===today);
   $('checkinBtn').disabled=checked||busy;$('checkinBtn').textContent=checked?'✓ 오늘 출석 완료':'🌸 오늘 출석하고 +10 BP';
-  $('ownerBox').classList.toggle('hidden',!state.can_adjust);
+  const isOwner=state.can_adjust===true&&state.user?.role==='site_owner';
+  $('ownerBox').classList.toggle('hidden',!isOwner);
+  $('ownerJump').classList.toggle('hidden',!isOwner);
+  $('totalGoods').textContent=(state.products||[]).length+'종 상품';
+  updateCategories();
   renderWeek();renderProducts();
   if(window.BlossomSkin)window.BlossomSkin.apply(state.equipped,state.products,state.user?.nickname);
  }
@@ -103,17 +121,37 @@
   }catch(e){status(e.message||'저장 실패',true)}
   finally{busy=false;if(state)render()}
  }
- function setup(){
-  const filter=$('filters');for(const [id,label] of kinds){
-   const b=el('button','chip'+(id==='all'?' active':''),label);b.type='button';
-   b.addEventListener('click',()=>{category=id;filter.querySelectorAll('.chip').forEach(n=>n.classList.toggle('active',n===b));renderProducts()});filter.append(b);
+ function updateCategories(){
+  const filters=$('filters');filters.replaceChildren();
+  for(const [id,label,emoji] of kinds){
+   const count=(state?.products||[]).filter(p=>(id==='all'||p.category===id)&&(view==='shop'||own().has(p.id))).length;
+   const b=el('button','category-btn'+(id===category?' active':''));b.type='button';
+   b.setAttribute('aria-pressed',String(id===category));
+   b.append(el('span','cat-emoji',emoji),el('span','cat-label',label),el('span','cat-count',count+'개'));
+   b.addEventListener('click',()=>{category=id;updateCategories();renderProducts()});filters.append(b);
   }
-  document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>{view=b.dataset.view;setActiveView();renderProducts()}));
+ }
+ function setup(){
+  updateCategories();
+  document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>{view=b.dataset.view;setActiveView();updateCategories();renderProducts()}));
   $('search').addEventListener('input',renderProducts);
+  $('clearSearch').addEventListener('click',()=>{$('search').value='';$('search').focus();renderProducts()});
+  $('sortProducts').addEventListener('change',renderProducts);
+  $('resetFilters').addEventListener('click',()=>{category='all';view='shop';$('search').value='';$('sortProducts').value='recommended';setActiveView();updateCategories();renderProducts();});
   $('checkinBtn').addEventListener('click',()=>mutation({action:'checkin'}));
-  $('adjustForm').addEventListener('submit',e=>{e.preventDefault();const username=$('adjustUsername').value.trim().toLowerCase();const delta=Number($('adjustDelta').value);
-   if(!Number.isInteger(delta)||!delta||Math.abs(delta)>2000)return status('조정 BP를 확인해 주세요.',true);
-   if(!window.confirm(`${username} 회원에게 ${delta>0?'+':''}${delta} BP를 적용할까요?`))return;
+  const radios=[...document.querySelectorAll('input[name="adjustMode"]')];
+  function updateAdminButton(){const give=radios.find(r=>r.checked)?.value!=='take';const btn=$('adjustSubmit');btn.textContent=give?'＋ BP 지급하기':'− BP 차감하기';btn.classList.toggle('deduct',!give)}
+  radios.forEach(r=>r.addEventListener('change',updateAdminButton));updateAdminButton();
+  $('adjustForm').addEventListener('submit',e=>{
+   e.preventDefault();
+   if(!state?.can_adjust||state.user?.role!=='site_owner')return status('최고관리자만 BP를 조정할 수 있습니다.',true);
+   const username=$('adjustUsername').value.trim().toLowerCase();
+   const amount=Number($('adjustAmount').value);
+   const mode=radios.find(r=>r.checked)?.value;
+   const delta=mode==='take'?-amount:amount;
+   if(!/^[a-z0-9_]{3,40}$/.test(username))return status('회원 아이디를 확인해 주세요.',true);
+   if(!Number.isInteger(amount)||amount<1||amount>2000)return status('1~2,000 사이 정수 BP를 입력해 주세요.',true);
+   if(!window.confirm(`${username} 회원에게 ${amount.toLocaleString()} BP를 ${delta>0?'지급':'차감'}할까요?`))return;
    mutation({action:'adjust',username,delta});
   });
   if(!escSession()){
