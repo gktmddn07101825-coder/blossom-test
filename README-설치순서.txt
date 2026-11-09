@@ -1,47 +1,61 @@
-BLOSSOM 이벤트 달력 v5 — 3단계 적용 방법
-========================================
-대상 저장소: GitHub blossom-test (blossom-home 운영용 저장소는 수정하지 않습니다)
+BLOSSOM 버프 타이머 v8 — blossom-test 전용
 
-필요한 기존 설정
-  - Supabase SQL: public.guild_calendar_events 테이블 (1단계)
-  - Supabase Edge Function: blossom-calendar (2단계)
-  - blossom-calendar / Verify JWT with legacy secret: OFF
-  - 기존 blossom-access, blossom-auth, blossom-events, blossom-admin Edge Functions 유지
+기존 로그인·숙제·이벤트·관리자 기능을 변경하지 않습니다.
+사용자가 올린 아이콘 3개, 알림음 3개를 실제 파일로 동봉했습니다.
 
-GitHub 파일 적용 — 딱 4개
-  1. event.html     기존 파일 내용 전체 교체
-  2. admin.html     기존 파일 내용 전체 교체
-  3. calendar.css   새 파일 추가
-  4. calendar.js    새 파일 추가
+[1] Supabase: SQL 만들기
+Supabase > SQL Editor > New query
+압축 파일 안의 sql/01-buffs.sql 전체 복사 > Run
+기존 테이블을 변경하지 않고 버프 전용 테이블 2개를 새로 만듭니다.
 
-네 파일 모두 index.html과 같은 경로(저장소 최상위)에 저장합니다.
-member-gate.js, auth.html, index.html, todo.html, timer.html, assets 폴더는 수정하지 않습니다.
-SQL 추가 실행도, Supabase 함수 재배포도 이 단계에서는 필요하지 않습니다.
+[2] Supabase: Edge Function 만들기
+Supabase > Edge Functions > Create function
+함수 이름 정확히: blossom-buffs
+index.ts 내용을 supabase/blossom-buffs-index.ts 내용으로 전체 교체 후 Deploy
+Settings: Verify JWT with legacy secret = OFF
+(기존 blossom-auth, blossom-admin, blossom-todo 등의 함수는 수정하지 않습니다.)
 
-확인 방법
-  1. 최고관리자로 로그인 → '관리자 센터' → '이벤트 달력' 탭 → '이벤트 일정 등록·관리 화면 열기'
-     또는 테스트 홈페이지 → '이벤트 & 공지' 페이지.
-  2. 화면 위쪽에 날짜별 35일 가로 타임라인이 보이는지 확인.
-  3. '＋ 이벤트 등록' → 제목, 시작 일시, 종료 일시, 색상 지정 → 등록하기.
-  4. 달력에 일정이 색깔 막대로 표시되는지 확인.
-  5. 막대 클릭 → 상세 내용·남은 시간·수정·삭제·숨기기 기능 확인.
-  6. 일반 회원 계정 로그인 → 이벤트 열람 가능 / 등록·수정 버튼 없음 확인.
+[3] GitHub: 오직 blossom-test에만 업로드
+GitHub > gktmddn07101825-coder/blossom-test
+다음 8개 파일을 index.html과 같은 최상위 위치에 놓습니다.
 
-중요
-  - 기존 v4 공지 게시판(공지 글 작성/수정/삭제)은 event.html 아래쪽에 그대로 남아 있습니다.
-  - event.html의 새로운 달력은 public.guild_calendar_events 테이블을 사용하고,
-    기존 게시판은 기존 guild_posts 테이블을 그대로 사용합니다. 서로 독립적입니다.
-  - 일정은 한국 시간(Asia/Seoul, UTC+09:00) 기준으로 입력·표시됩니다.
-  - 서버에서 승인된 회원인지 확인하며, 운영진 이상인지 확인한 후 수정 기능을 허용합니다.
-  - 숨긴 이벤트는 운영진 이상에게만 표시됩니다.
-  - 별도의 이미지 주소를 입력하지 않아도 색상 그라데이션 막대가 표시됩니다.
-  - GitHub Pages HTML은 공개되므로 비공개 데이터 접근 제어는 Edge Function을 통해 수행합니다.
-  - 등록된 이벤트가 없다면 '이 기간에 등록된 이벤트가 없습니다'가 정상입니다.
-  - 로그인 만료 시 다시 로그인해야 합니다. 기존 인증 방식을 유지했습니다.
+교체 파일 (1개): timer.html
+새로 올릴 파일 (7개):
+  buff-app.js
+  Booster.PNG
+  Integration.PNG
+  Blessing.PNG
+  digivice.wav
+  digivice-alert.mp3
+  alert.mp3
 
-문제가 생길 때
-  - 예전 페이지가 나온다: Ctrl+Shift+R 새로고침 / GitHub Pages 배포 완료 확인.
-  - 이벤트 목록 오류: Supabase blossom-calendar 배포 및 SQL 테이블 확인.
-  - 관리자에게 등록 버튼이 없다: 로그인 계정 등급과 Supabase 응답 can_edit 확인.
-  - 상대적인 URL 대신, 아래 주소로 접근:
-    https://gktmddn07101825-coder.github.io/blossom-test/event.html?v=5
+파일 이름의 대소문자를 그대로 유지해 주세요.
+폴더에 있는 SQL/.ts 파일은 GitHub에 올리지 마세요.
+기존 member-gate.js가 저장소에 있어야 하며, 이전 숙제 페이지에서 사용 중이었다면 이미 있습니다.
+Commit changes > GitHub Pages 배포 완료 후 접속.
+
+테스트 주소:
+https://gktmddn07101825-coder.github.io/blossom-test/timer.html?v=8
+
+[4] 실제 테스트
+① 최고관리자 로그인 > 타이머 페이지 맨 아래 '길드 기본 버프 관리'에서 3개 등록
+② 일반회원 로그인 > 기본 버프 표시 확인
+③ 일반회원에서 버프 시간/이름/아이콘/알림음/볼륨 변경 > '설정 저장'
+④ 새로고침 > 변경 내용 유지 확인
+⑤ '내 버프 추가' > 새로고침 후 유지 확인
+⑥ 버프 시간 1분으로 설정 > '시작/재시작' > 종료 알림음 재생 확인
+⑦ 다른 계정 로그인 > 첫 회원의 개인 설정/개인 버프가 보이지 않는지 확인
+
+소리 3종:
+① 디지바이스 효과음: digivice.wav
+② 디지바이스 알림: digivice-alert.mp3 (원본: 디지바이스 알림음.mp3)
+③ 음성 알림: alert.mp3
+
+주의:
+- 길드 공용 기본 버프는 운영진 이상만 관리할 수 있습니다.
+- 일반 회원도 자기 기본 버프의 이름/시간/알림음/볼륨/아이콘을 개인별로 바꾸고 저장할 수 있습니다.
+- 다른 회원의 개인 설정에 영향을 주지 않습니다.
+- 사용자 설정/실행 종료시각은 Supabase에 저장되어 브라우저를 닫아도 복구됩니다. 재로그인은 필요할 수 있습니다.
+- 브라우저가 완전히 닫혔을 때 서버가 자동으로 소리를 재생해 주지는 않습니다. 페이지를 연 상태에서만 알림음 재생을 시도합니다.
+- 타이머 실행 중 설정을 바꾸면 다음 시작부터 변경한 시간으로 적용되며, 실행 중인 종료 시각은 그대로 유지됩니다.
+- 운영진의 기본 버프 완전 삭제 시 해당 버프의 모든 개인 설정도 삭제되므로 신중히 선택하세요. 일반 회원은 기본 버프를 삭제할 수 없습니다.
