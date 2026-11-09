@@ -1,37 +1,34 @@
-BLOSSOM 길드 공지/이벤트 게시판 v4 - blossom-test 전용
+BLOSSOM v6 | 홈 진행·예정 이벤트 자동 연동
+==========================================
+적용 대상: GitHub blossom-test 저장소만 (운영용 blossom-home 수정 X)
 
-이번에는 딱 3곳만 적용합니다. blossom-home 운영 사이트는 건드리지 마세요.
+GitHub 업로드 파일은 딱 2개:
+1. index.html     → 저장소의 기존 index.html 내용 전체 교체
+2. home-events.js → 새 파일로 업로드 (index.html과 같은 위치)
 
-1) Supabase > SQL Editor > New query
-   ZIP의 sql/01-guild-posts.sql 전체를 복사 -> Run.
-   기존 회원/로그인 정보는 수정하지 않고 guild_posts 테이블만 만듭니다.
+그 외 admin.html, event.html, auth.html, member-nav.js, calendar.js, calendar.css, todo.html, timer.html, assets 등은 건드리지 마세요.
+Supabase SQL/Edge Functions 추가 작업도 필요 없습니다.
 
-2) Supabase > Edge Functions > Create function
-   이름: blossom-events
-   supabase/blossom-events-index.ts 전체를 index.ts에 붙여넣기 -> Deploy.
-   Settings에서 Verify JWT with legacy secret = OFF.
-   함수 내부에서 로그인 토큰·회원 승인·역할을 직접 검증합니다.
+기능:
+- 서버 blossom-calendar에 등록한 '공개' 일정만 메인 페이지에 표시
+- 현재 진행 중인 이벤트 우선, 다음 예정 이벤트 순으로 최대 4건
+- 시작/종료 카운트다운 30초마다 자동 갱신
+- 진행 중 이벤트는 경과 비율을 작은 가로 막대로 표시
+- 오늘의 길드 현황에 '진행/예정' 일정 건수 자동 표시
+- 매 5분 또는 탭 복귀 시 서버의 최신 일정 재조회
+- 숨긴 이벤트는 최고관리자에게도 홈 미리보기에서는 표시되지 않음
+- 로그인하지 않은 방문자는 이벤트 데이터를 받지 않고 로그인 안내 표시
 
-3) GitHub blossom-test
-   event.html을 ZIP의 event.html로 교체 -> Commit changes.
-   index.html, auth.html, admin.html, member-gate.js 등 나머지 파일은 건드리지 않습니다.
+테스트:
+1. blossom-test 메인 홈페이지 열기
+2. 로그인하지 않은 상태 → 이벤트 영역에 '로그인 후' 안내 표시
+3. 로그인 → '진행 중인 이벤트' 영역에 등록한 공개 일정 표시
+4. event.html에서 기존 이벤트를 숨기기 → 메인에서 새로고침 시 사라짐
+5. 이벤트 삭제 → 메인에서 새로고침 시 사라짐
 
-테스트 방법
- - 일반 회원으로 로그인 -> event.html 접속 -> 게시물 읽기만 가능, 작성 폼 숨김.
- - 운영진 테스트 계정으로 로그인 -> event.html 접속 -> 공지 작성/수정/삭제.
- - 최고관리자 계정 -> 다른 운영진 게시물도 수정/삭제 가능.
- - 로그아웃 -> event.html 직접 접속 시 길드원 로그인 요청.
- - 운영진을 일반 회원으로 낮춘 뒤 새로고침 -> 글 작성 불가.
-
-권한 표
- - 일반 회원: 읽기
- - 운영진/부마스터: 읽기 + 글 작성 + 자신이 쓴 글 수정/삭제
- - 길드마스터/최고관리자: 읽기 + 글 작성 + 모든 글 수정/삭제
-
-주의
- - GitHub Pages의 HTML 파일은 누구나 볼 수 있습니다. 게시물 데이터는 Supabase 함수가 인증 후에만 제공합니다.
- - Supabase Service Role Key, 회원 비밀번호, 토큰을 GitHub에 업로드하지 마세요.
- - 글 목록은 최근 100개까지 출력합니다. 향후 검색/페이지 이동 기능을 추가할 수 있습니다.
- - 이번 버전은 실제 게시물 저장/조회/수정/삭제까지 구현했습니다. 기존 별도의 이벤트 데이터가 자동 이관되지는 않습니다.
- - 로그인 토큰 만료 시 재로그인 필요 (기존 인증 구조 유지).
- - 실제 배포 후 사용자 환경에서의 동작은 확인 전입니다.
+주의:
+- 앞으로 90일 안에 시작하거나 현재 진행 중인 이벤트를 조회합니다.
+- 기존 세션 저장 방식(sessionStorage)을 그대로 사용합니다.
+- GitHub Pages는 정적 파일 공개 사이트이고, 실제 회원 데이터 접근 권한은 blossom-calendar Edge Function에서 검증합니다.
+- 홈에서의 카운트다운은 브라우저를 열어둔 동안 자동으로 갱신됩니다.
+- GitHub Pages 배포 완료 후 Ctrl+Shift+R로 캐시를 새로고침하세요.
