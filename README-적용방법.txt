@@ -1,34 +1,22 @@
-BLOSSOM 관리 권한 통합 v10 - 적용 순서 (blossom-test 전용)
+BLOSSOM mini timer v11.2 오류 수정 — blossom-test만!
 
-1) Supabase > Edge Functions > blossom-admin > Code > index.ts
-   ZIP/supabase/blossom-admin-index.ts 전체로 교체 -> Deploy
-   Verify JWT with legacy secret = OFF 기존 유지
+문제:
+1. 이전 mini-app.js에는 '회원 확인 중...' 상태를 완료된 닉네임으로 바꾸는 코드가 없었습니다.
+2. 기존 로그인은 sessionStorage(탭별 저장)라 새 미니 창에서 로그인 정보가 없을 수 있습니다.
 
-2) Supabase > Edge Functions > blossom-events > Code > index.ts
-   ZIP/supabase/blossom-events-index.ts 전체로 교체 -> Deploy
-   운영진/부마스터도 모든 공지 수정·삭제 가능해집니다.
+적용: GitHub blossom-test 저장소 최상위 파일 중
+ - mini.html 기존 파일 교체
+ - mini-app.js 기존 파일 교체
+위 두 파일만 GitHub에서 업로드 → Commit changes.
+Supabase SQL, Edge Functions, 버프 데이터, 기타 HTML 파일은 수정하지 않습니다.
 
-3) GitHub > blossom-test 저장소 (main 브랜치):
-   admin.html 기존 파일 교체
-   member-nav.js 기존 파일 교체
-   Commit changes
-   index.html, event.html, todo.html, timer.html 변경하지 마세요.
+테스트:
+1) https://gktmddn07101825-coder.github.io/blossom-test/mini.html?v=11-2
+2) '미니 타이머 로그인'이 보이면 기존 길드 계정으로 이 창에서 한 번 로그인.
+3) 닉네임과 실행 중인 버프가 표시되어야 합니다.
+4) 버프를 timer.html에서 먼저 시작해야 남은 시간이 나옵니다.
+5) 새로고침해도 동일한 탭에서는 로그인과 남은 시간이 이어집니다.
 
-4) 테스트
-   - 일반회원으로 로그인: 관리자 센터 버튼 없음
-   - 운영진으로 로그인: 관리자 센터 표시, 가입 신청 승인/거절 가능
-   - 회원 목록: 하위 직급 회원만 등급 변경/이용 중지
-   - 이용 중지 회원은 로그인 불가, 데이터/계정 보존
-   - '이용 중지' 탭에서 복구 가능(가입 거절한 계정도 포함)
-   - 운영진으로 타인 공지 수정/삭제 가능
-
-직급 순위: 최고관리자 > 길드마스터 > 부마스터 > 운영진 > 일반회원
-동급 및 상위 직급은 등급 변경/이용 중지 불가능. 본인 및 최고관리자 보호.
-
-중요:
- - '이용 중지'는 영구 삭제가 아닙니다. 기존 profiles.status의 rejected로 설정하여 승인 회원 인증을 거부합니다.
- - 기존 가입 거절도 rejected라서 '이용 중지' 탭에 같이 나옵니다.
- - 완전한 개인정보/계정 삭제 기능은 아직 포함되지 않습니다.
- - 관리자 등록/회원 정지는 서버에서 로그인 토큰과 승인된 등급으로 검증합니다.
- - 프로젝트가 현재 기존 profiles.status에 approved/pending/rejected를 쓰는 구조에 맞췄습니다.
- - 실제 배포 및 변경 테스트는 아직 진행하지 않았습니다.
+주의: 이 페이지는 게임 키 입력을 감지하지 않으며 게임을 조작하지 않습니다.
+설정/종료 시각은 서버에서 그대로 불러옵니다.
+별도 창에서 브라우저가 종료되면 브라우저 세션이 끝날 수 있으므로 다시 로그인해야 할 수 있습니다.
