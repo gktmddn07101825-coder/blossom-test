@@ -27,12 +27,19 @@
   <div class="tabs" role="tablist" aria-label="회원 관리 기능">
    <button class="tab" id="pendingTab" type="button" role="tab" aria-selected="true" aria-controls="pendingView">가입 대기 <span class="counter" id="pendingCount"></span></button>
    <button class="tab" id="membersTab" type="button" role="tab" aria-selected="false" aria-controls="membersView">전체 회원 <span class="counter" id="membersCount"></span></button>
+   <button class="tab" id="calendarTab" type="button" role="tab" aria-selected="false" aria-controls="calendarView">🗓 이벤트 달력</button>
   </div>
   <section id="pendingView" role="tabpanel" aria-labelledby="pendingTab"><p class="muted">신규 가입 신청을 승인하거나 거절할 수 있습니다.</p><div id="pendingList" aria-live="polite"></div></section>
   <section id="membersView" role="tabpanel" aria-labelledby="membersTab" hidden>
    <div class="toolbar"><label class="inline-label" for="search">길드원 검색</label><input id="search" type="search" autocomplete="off" placeholder="아이디 또는 디마 닉네임 검색"><span id="countHint" class="muted"></span></div>
    <div id="memberList" aria-live="polite"></div>
    <p class="note">일반 회원·운영진·부마스터·길드마스터 등급만 변경할 수 있습니다. 최고관리자는 변경할 수 없습니다.</p>
+  </section>
+  <section id="calendarView" role="tabpanel" aria-labelledby="calendarTab" hidden>
+   <h2 style="margin-top:23px">🗓 이벤트 일정 관리</h2>
+   <p>길드 이벤트 시작일·종료일·색상·공개 여부를 관리합니다. 화면에서 바로 등록·수정·삭제가 가능합니다.</p>
+   <a href="event.html#calendarManage" style="display:inline-block;margin:12px 0 18px;border:1px solid #b38ceb;border-radius:9px;padding:14px 20px;font-size:14px;font-weight:800;background:linear-gradient(110deg,#5949a8,#8b56aa)">✦ 이벤트 일정 등록·관리 화면 열기 ↗</a>
+   <p class="note">운영진·부마스터·길드마스터도 이벤트 페이지에서 일정 관리가 가능합니다. 일반 길드원은 보기만 가능합니다.</p>
   </section>
   <p id="adminMessage" class="message" role="status" aria-live="polite"></p>
  </div>
@@ -71,7 +78,8 @@ function switchTab(tab){
  activeTab=tab;
  $('pendingTab').setAttribute('aria-selected',String(tab==='pending'));
  $('membersTab').setAttribute('aria-selected',String(tab==='members'));
- $('pendingView').hidden=tab!=='pending';$('membersView').hidden=tab!=='members';
+ $('calendarTab').setAttribute('aria-selected',String(tab==='calendar'));
+ $('pendingView').hidden=tab!=='pending';$('membersView').hidden=tab!=='members';$('calendarView').hidden=tab!=='calendar';
 }
 async function api(body){return post(ADMIN_URL,body,token);}
 function handleError(error){
@@ -160,6 +168,7 @@ $('loginForm').addEventListener('submit',async event=>{
 });
 $('pendingTab').addEventListener('click',()=>switchTab('pending'));
 $('membersTab').addEventListener('click',()=>switchTab('members'));
+$('calendarTab').addEventListener('click',()=>switchTab('calendar'));
 $('search').addEventListener('input',renderApproved);
 $('refreshButton').addEventListener('click',reload);
 $('logoutButton').addEventListener('click',()=>{try{sessionStorage.removeItem(SESSION_KEY);}catch{}showLogin();$('loginForm').reset();msg('loginMessage','로그아웃했습니다.');});

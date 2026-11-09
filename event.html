@@ -8,7 +8,7 @@
 <style>
 :root{--bg:#090d20;--panel:#161c3b;--pink:#f3a4f4;--blue:#76ddff;--text:#f5f3ff;--muted:#bbc3e8}
 *{box-sizing:border-box}body{margin:0;min-height:100vh;color:var(--text);font-family:'Malgun Gothic','Apple SD Gothic Neo',sans-serif;background:radial-gradient(ellipse at 50% 0,#26225b 0,transparent 55%),var(--bg)}a{color:inherit;text-decoration:none}[hidden]{display:none!important}
-.wrap{width:min(1070px,calc(100% - 36px));margin:auto}.top{background:#10142ee8;border-bottom:1px solid #7774d66b;backdrop-filter:blur(16px)}.nav{height:78px;display:flex;justify-content:space-between;align-items:center;gap:18px}.brand{font-size:27px;font-weight:900;font-style:italic;color:#ffd4ff;text-shadow:0 0 17px #c75cf5}.brand small{display:block;font-size:10px;letter-spacing:2.5px;color:#bfc5f6;font-style:normal}.back{font-weight:700;font-size:14px;color:#adf1ff}
+.wrap{width:min(1450px,calc(100% - 36px));margin:auto}.top{background:#10142ee8;border-bottom:1px solid #7774d66b;backdrop-filter:blur(16px)}.nav{height:78px;display:flex;justify-content:space-between;align-items:center;gap:18px}.brand{font-size:27px;font-weight:900;font-style:italic;color:#ffd4ff;text-shadow:0 0 17px #c75cf5}.brand small{display:block;font-size:10px;letter-spacing:2.5px;color:#bfc5f6;font-style:normal}.back{font-weight:700;font-size:14px;color:#adf1ff}
 main{padding:42px 0 90px}.eyebrow{font-size:12px;letter-spacing:3px;color:var(--blue);font-weight:800}.intro h1{font-size:clamp(32px,5vw,52px);margin:13px 0 12px;font-weight:900}.intro p{color:var(--muted);line-height:1.8;max-width:770px;margin:0}.panel{background:linear-gradient(135deg,#24254b,#131b38);border:1px solid #776bc4;border-radius:17px;box-shadow:0 9px 28px #02041470;padding:24px;margin-top:25px}.panel h2{margin:0 0 14px;font-size:21px}.status{min-height:25px;color:#c1e9ff;font-size:13px;margin:20px 1px}.status.error{color:#ffb2c9}.status.success{color:#91ffcc}.actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}button{font:inherit;font-weight:800;font-size:14px;border-radius:10px;border:1px solid #a38ce7;color:#fff;background:linear-gradient(110deg,#6958bd,#b66ed7);padding:12px 17px;cursor:pointer}button.subtle{background:#1b244a;border:1px solid #6369aa}button.danger{background:#682d57;border:1px solid #bd7ba8}button:disabled{opacity:.5;cursor:wait}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-top:24px}.tabs button{background:#161d3e;color:#dbe0ff;border-color:#565e9f}.tabs button[aria-pressed=true]{background:linear-gradient(110deg,#6958bd,#b66ed7);border-color:#edb6ff}
 #feed{display:grid;gap:16px;margin-top:20px}.entry{padding:22px 24px;background:linear-gradient(135deg,#22244a,#121b35);border:1px solid #6661ae;border-radius:16px}.entry-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap}.entry h2{font-size:20px;margin:0;line-height:1.5;overflow-wrap:anywhere}.meta{font-size:12px;color:#c0c9eb;margin-top:9px;line-height:1.65}.kind{display:inline-block;border:1px solid #b58bc9;background:#48305d;color:#ffc9ed;border-radius:100px;padding:4px 9px;font-size:12px;font-weight:900;margin-right:8px}.kind.event{border-color:#71cbdc;background:#163e5a;color:#a4f2ff}.entry .content{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.85;font-size:14px;color:#ebeafe;margin:18px 0 8px}.event-date{font-size:13px;font-weight:800;color:#a0edff;margin-top:13px}.entry .actions button{font-size:12px;padding:8px 11px}.empty{text-align:center;border:1px dashed #6661ae;border-radius:16px;padding:40px 16px;color:#c5cdf2}
 .form-grid{display:grid;gap:13px}.form-grid label{display:block;font-weight:800;color:#dbe6ff;font-size:13px;margin:0 0 6px}input,select,textarea{width:100%;border:1px solid #6b68a9;background:#0e1632;color:white;border-radius:10px;padding:12px 13px;font:inherit;font-size:14px;outline-offset:2px}input:focus,textarea:focus,select:focus{outline:2px solid #83dfff}textarea{min-height:180px;resize:vertical;line-height:1.7}.field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}.hint{font-size:12px;color:var(--muted);line-height:1.65}.head-row{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
@@ -22,7 +22,9 @@ html:not([data-blossom-access="approved"]) body > :not(#blossom-access-gate){vis
 html[data-blossom-access="approved"] #blossom-access-gate{display:none!important}
 @media(max-width:640px){.nav{height:70px}.brand{font-size:21px}.back{font-size:12px}.panel,.entry{padding:18px}.field-row{grid-template-columns:1fr}.intro h1{font-size:33px}}
 </style>
+<link rel="stylesheet" href="calendar.css?v=5">
 <script defer src="member-gate.js"></script>
+<script defer src="calendar.js?v=5"></script>
 </head>
 <body>
 <div id="blossom-access-gate" role="status" aria-live="polite"><div class="gate-card">
@@ -32,7 +34,73 @@ html[data-blossom-access="approved"] #blossom-access-gate{display:none!important
 </div></div>
 <header class="top"><nav class="wrap nav"><a class="brand" href="index.html">✿ BLOSSOM<small>DIGITAL WORLD GUILD</small></a><a class="back" href="index.html">← 홈페이지</a></nav></header>
 <main class="wrap">
- <section class="intro"><div class="eyebrow">BLOSSOM COMMUNITY</div><h1>✦ 이벤트 & 공지</h1><p>블로썸 길드의 공지와 이벤트 일정을 한곳에서 확인하세요. 모든 승인 회원이 읽을 수 있고, 운영진 이상은 글을 등록할 수 있습니다.</p></section>
+ <section class="intro"><div class="eyebrow">BLOSSOM COMMUNITY</div><h1>✦ 이벤트 & 공지</h1><p>블로썸 길드의 공지와 이벤트 일정을 한곳에서 확인하세요. 승인된 길드원은 이벤트 기간을 타임라인으로 확인하고, 운영진 이상은 일정을 관리할 수 있습니다. 아래에는 기존 공지 게시판도 그대로 유지됩니다.</p></section>
+
+ <!-- BLOSSOM EVENT TIMELINE V5 / 기존 공지 게시판은 아래에 그대로 유지 -->
+ <section id="blossomCalendar" aria-label="길드 이벤트 타임라인">
+  <div class="bc-head">
+   <div><div class="bc-eyebrow">✦ EVENT TIMELINE / BLOSSOM</div><h2>🗓 이벤트 일정표</h2><p class="bc-description">기간 막대를 눌러 이벤트 정보를 확인하세요. 모든 시각은 한국 시간(KST) 기준입니다.</p></div>
+   <div class="bc-time" id="bcClock" aria-label="현재 한국 시간">KST --:--:--</div>
+  </div>
+  <div class="bc-toolbar">
+   <div class="bc-controls">
+    <button id="bcPrev" type="button" title="이전 2주" aria-label="이전 2주">‹ 이전</button>
+    <button id="bcToday" type="button">오늘</button>
+    <button id="bcNext" type="button" title="다음 2주" aria-label="다음 2주">다음 ›</button>
+    <input id="bcMonth" class="bc-month" type="month" aria-label="조회 시작 월 선택" min="2020-01" max="2100-12">
+   </div>
+   <div class="bc-controls">
+    <select id="bcCategory" class="bc-filter" aria-label="이벤트 종류 선택">
+     <option value="all">모든 이벤트</option><option value="game">🎮 게임 이벤트</option><option value="guild">🌸 길드 일정</option><option value="notice">📢 안내</option><option value="maintenance">🛠 점검</option><option value="other">✨ 기타</option>
+    </select>
+    <button id="bcReload" type="button">↻ 새로고침</button>
+    <button id="bcCreateButton" class="bc-primary" type="button" hidden>＋ 이벤트 등록</button>
+   </div>
+  </div>
+  <div class="bc-shell">
+   <div class="bc-shelltop"><strong>✿ BLOSSOM SCHEDULE</strong><span id="bcRangeLabel">기간 불러오는 중...</span><span id="bcCount">0개 일정</span></div>
+   <div class="bc-scroll" tabindex="0" role="region" aria-label="좌우로 스크롤할 수 있는 이벤트 달력">
+    <div class="bc-canvas">
+     <div id="bcDays" class="bc-days" aria-hidden="true"></div>
+     <div id="bcRows" class="bc-rows" aria-live="polite"><div class="bc-empty"><strong>이벤트 달력 준비 중</strong>회원 정보 확인 후 불러옵니다.</div></div>
+     <div id="bcNowline" class="bc-nowline" aria-label="현재 시간 표시선" hidden></div>
+    </div>
+   </div>
+  </div>
+  <div class="bc-note">↔ 달력은 좌우로 스크롤할 수 있어요. 색상 막대는 이벤트 시작부터 종료까지 표시됩니다. 세로 금색 선은 현재 시각입니다.</div>
+  <p id="bcStatus" class="bc-status" role="status" aria-live="polite">이벤트 달력 연결을 기다리고 있어요...</p>
+
+  <section id="bcEditorSection" class="bc-editor" aria-label="관리자 이벤트 등록 및 수정" hidden>
+   <div id="calendarManage" class="bc-eyebrow">BLOSSOM STAFF ONLY · 이벤트 관리</div>
+   <h3 id="bcFormTitle">✦ 새 이벤트 등록</h3>
+   <p>운영진·부마스터·길드마스터·최고관리자만 저장할 수 있습니다. 길드원은 보는 것만 가능합니다.</p>
+   <form id="bcForm">
+    <div class="bc-formgrid">
+     <div class="bc-field bc-full"><label for="bcTitleInput">이벤트 제목 *</label><input id="bcTitleInput" required minlength="2" maxlength="120" placeholder="예: 주간 길드 보스 레이드"></div>
+     <div class="bc-field"><label for="bcStartInput">시작 날짜 / 시각 (KST) *</label><input type="datetime-local" id="bcStartInput" required></div>
+     <div class="bc-field"><label for="bcEndInput">종료 날짜 / 시각 (KST) *</label><input type="datetime-local" id="bcEndInput" required></div>
+     <div class="bc-field"><label for="bcCategoryInput">카테고리</label><select id="bcCategoryInput"><option value="game">🎮 게임 이벤트</option><option value="guild">🌸 길드 일정</option><option value="notice">📢 공지·안내</option><option value="maintenance">🛠 서버 점검</option><option value="other">✨ 기타</option></select></div>
+     <div class="bc-field"><label for="bcColorInput">달력 바 색상</label><input type="color" id="bcColorInput" value="#8b7bff"></div>
+     <div class="bc-field bc-full"><label for="bcDescriptionInput">상세 내용 (선택)</label><textarea id="bcDescriptionInput" maxlength="4000" placeholder="길드원에게 안내할 내용"></textarea></div>
+     <div class="bc-field bc-full"><label for="bcBannerInput">이벤트 배경 이미지 URL (선택 / https)</label><input id="bcBannerInput" type="url" maxlength="2000" placeholder="https://..."></div>
+     <div class="bc-field"><label for="bcOrderInput">표시 순서 (숫자가 작을수록 위)</label><input id="bcOrderInput" type="number" min="-10000" max="10000" step="1" value="0"></div>
+     <div class="bc-field"><label for="bcVisibleInput">공개 여부</label><label class="bc-check"><input type="checkbox" id="bcVisibleInput" checked> 모든 승인 길드원에게 공개</label></div>
+    </div>
+    <div class="bc-formactions"><button class="bc-primary" type="submit" id="bcSave">등록하기</button><button type="button" id="bcCancel" hidden>수정 취소</button><span class="bc-description">날짜를 넣으면 길드원 달력에 자동 표시됩니다.</span></div>
+   </form>
+  </section>
+
+  <dialog id="bcDetail" class="bc-detail" aria-labelledby="bcDetailTitle">
+   <div class="bc-detail-head"><div id="bcDetailKind" class="bc-detail-kind">이벤트</div><h3 id="bcDetailTitle"></h3></div>
+   <div class="bc-detail-body">
+    <div id="bcDetailDates"></div><div id="bcDetailCountdown"></div>
+    <p id="bcDetailDescription"></p><div id="bcDetailVisibility" class="bc-description"></div>
+    <div class="bc-detail-actions"><button id="bcDetailEdit" type="button" hidden>✎ 수정</button><button id="bcDetailVisibilityButton" type="button" hidden>숨기기</button><button id="bcDetailDelete" class="bc-danger" type="button" hidden>삭제</button><button id="bcDetailClose" type="button">닫기</button></div>
+   </div>
+  </dialog>
+ </section>
+ <!-- 기존 v4 게시판 영역 시작 -->
+ <div style="border-top:1px solid #56578e;padding-top:30px;margin-top:40px"><div class="eyebrow">GUILD COMMUNITY BOARD</div><h2 style="font-size:26px;margin:10px 0 4px">📢 길드 공지 게시판</h2><p style="color:#c7cae8;font-size:13px">기존 공지사항과 글 작성 기능은 그대로 유지됩니다.</p></div>
  <p id="boardStatus" class="status" aria-live="polite">길드 게시판을 불러오는 중...</p>
  <section id="editor" class="panel" hidden>
   <div class="head-row"><h2 id="editorTitle">✎ 새 게시물 작성</h2><button id="cancelEdit" type="button" class="subtle" hidden>수정 취소</button></div>

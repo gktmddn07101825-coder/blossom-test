@@ -1,34 +1,47 @@
-# BLOSSOM 테스트용 회원 접근 확인 (v1)
+BLOSSOM 이벤트 달력 v5 — 3단계 적용 방법
+========================================
+대상 저장소: GitHub blossom-test (blossom-home 운영용 저장소는 수정하지 않습니다)
 
-## GitHub blossom-test 업로드
-다음 6개 파일을 `index.html`과 같은 저장소 최상위 폴더에 업로드하세요.
-- index.html (기존 파일 교체, 내부 링크 새 창 열기 해제)
-- auth.html (기존 파일 교체, 로그인 후 이전 페이지 돌아가기)
-- todo.html (기존 파일 교체, 회원 확인 화면)
-- timer.html (기존 파일 교체, 회원 확인 통과 후 타이머 초기화)
-- event.html (기존 파일 교체, 회원 확인 화면)
-- member-gate.js (새 파일 추가)
+필요한 기존 설정
+  - Supabase SQL: public.guild_calendar_events 테이블 (1단계)
+  - Supabase Edge Function: blossom-calendar (2단계)
+  - blossom-calendar / Verify JWT with legacy secret: OFF
+  - 기존 blossom-access, blossom-auth, blossom-events, blossom-admin Edge Functions 유지
 
-`admin.html`과 `assets/`는 그대로 유지합니다.
+GitHub 파일 적용 — 딱 4개
+  1. event.html     기존 파일 내용 전체 교체
+  2. admin.html     기존 파일 내용 전체 교체
+  3. calendar.css   새 파일 추가
+  4. calendar.js    새 파일 추가
 
-## Supabase Edge Function 배포
-Supabase > Edge Functions > Create a new function > via Editor.
-Function name: `blossom-access`.
-`supabase/blossom-access-index.ts`의 전체 코드를 복사해서 `index.ts`에 붙여넣고 Deploy.
-Function Settings: `Verify JWT with legacy secret`를 **OFF**로 설정.
-(함수 코드 안에서 Supabase Auth getUser로 JWT를 직접 검증합니다.)
-서비스 역할 키는 Supabase 함수 환경변수로만 사용하고 GitHub에 올리지 마세요.
+네 파일 모두 index.html과 같은 경로(저장소 최상위)에 저장합니다.
+member-gate.js, auth.html, index.html, todo.html, timer.html, assets 폴더는 수정하지 않습니다.
+SQL 추가 실행도, Supabase 함수 재배포도 이 단계에서는 필요하지 않습니다.
 
-## 테스트
-1. 로그아웃(또는 새 시크릿 창) 후 todo.html 접속 -> 로그인 요청 화면.
-2. 로그인 후 '이용하던 페이지로' 클릭 -> todo.html 표시.
-3. timer.html / event.html 정상 표시.
-4. auth.html 로그아웃 -> 다시 todo.html -> 접근 안내 화면.
-5. 승인 전 계정은 blossom-auth 로그인 자체가 거절되는지 확인.
+확인 방법
+  1. 최고관리자로 로그인 → '관리자 센터' → '이벤트 달력' 탭 → '이벤트 일정 등록·관리 화면 열기'
+     또는 테스트 홈페이지 → '이벤트 & 공지' 페이지.
+  2. 화면 위쪽에 날짜별 35일 가로 타임라인이 보이는지 확인.
+  3. '＋ 이벤트 등록' → 제목, 시작 일시, 종료 일시, 색상 지정 → 등록하기.
+  4. 달력에 일정이 색깔 막대로 표시되는지 확인.
+  5. 막대 클릭 → 상세 내용·남은 시간·수정·삭제·숨기기 기능 확인.
+  6. 일반 회원 계정 로그인 → 이벤트 열람 가능 / 등록·수정 버튼 없음 확인.
 
-## 보안 범위
-GitHub Pages 정적 HTML/JS는 공개 저장소에서 누구나 내려받을 수 있습니다. 이 코드는 UX 접근 게이트이며, HTML 파일을 서버 차원에서 비공개로 만들지 않습니다.
-`blossom-access`는 매 진입 때 실제 인증 상태와 `profiles.status=approved`를 서버에서 검증합니다.
-장차 비공개 길드 게시물/회원정보/숙제 데이터가 생긴다면 Supabase RLS 또는 회원 인증된 Edge Functions 뒤에서만 제공해야 합니다.
-기존 테스트용 숙제/이벤트 페이지는 실제 데이터 연동 없는 안내 페이지입니다.
-로그인 토큰 만료 시 다시 로그인해야 합니다 (자동 갱신 미구현).
+중요
+  - 기존 v4 공지 게시판(공지 글 작성/수정/삭제)은 event.html 아래쪽에 그대로 남아 있습니다.
+  - event.html의 새로운 달력은 public.guild_calendar_events 테이블을 사용하고,
+    기존 게시판은 기존 guild_posts 테이블을 그대로 사용합니다. 서로 독립적입니다.
+  - 일정은 한국 시간(Asia/Seoul, UTC+09:00) 기준으로 입력·표시됩니다.
+  - 서버에서 승인된 회원인지 확인하며, 운영진 이상인지 확인한 후 수정 기능을 허용합니다.
+  - 숨긴 이벤트는 운영진 이상에게만 표시됩니다.
+  - 별도의 이미지 주소를 입력하지 않아도 색상 그라데이션 막대가 표시됩니다.
+  - GitHub Pages HTML은 공개되므로 비공개 데이터 접근 제어는 Edge Function을 통해 수행합니다.
+  - 등록된 이벤트가 없다면 '이 기간에 등록된 이벤트가 없습니다'가 정상입니다.
+  - 로그인 만료 시 다시 로그인해야 합니다. 기존 인증 방식을 유지했습니다.
+
+문제가 생길 때
+  - 예전 페이지가 나온다: Ctrl+Shift+R 새로고침 / GitHub Pages 배포 완료 확인.
+  - 이벤트 목록 오류: Supabase blossom-calendar 배포 및 SQL 테이블 확인.
+  - 관리자에게 등록 버튼이 없다: 로그인 계정 등급과 Supabase 응답 can_edit 확인.
+  - 상대적인 URL 대신, 아래 주소로 접근:
+    https://gktmddn07101825-coder.github.io/blossom-test/event.html?v=5
