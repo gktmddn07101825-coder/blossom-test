@@ -41,7 +41,7 @@
     roleTag.textContent = roles[user.role] || '길드원';
     roleTag.hidden = false;
     logoutButton.hidden = false;
-    adminLink.hidden = user.role !== 'site_owner';
+    adminLink.hidden = !['site_owner','guild_master','vice_master','staff'].includes(user.role);
   }
   logoutButton.addEventListener('click', () => {
     clearSession();

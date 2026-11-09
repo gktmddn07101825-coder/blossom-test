@@ -15,10 +15,10 @@
 <main class="wrap">
 <div class="eyebrow">BLOSSOM MANAGEMENT</div>
 <h1>✦ 관리자 센터</h1>
-<p>최고관리자 전용 · 가입 승인 및 기존 길드원 등급 관리</p>
+<p>운영진 이상 · 가입 승인, 회원 관리 및 길드 운영</p>
 <section id="loginPanel" class="panel login">
  <h2>관리자 로그인</h2><p class="muted">기존 로그인 계정으로 접속할 수 있습니다.</p>
- <form id="loginForm"><label class="field" for="username">아이디</label><input id="username" autocomplete="username" required minlength="4" maxlength="20" placeholder="최고관리자 아이디"><label class="field" for="password">비밀번호</label><input id="password" type="password" autocomplete="current-password" required placeholder="비밀번호"><button id="loginButton" type="submit">로그인</button></form>
+ <form id="loginForm"><label class="field" for="username">아이디</label><input id="username" autocomplete="username" required minlength="4" maxlength="20" placeholder="길드 운영진 아이디"><label class="field" for="password">비밀번호</label><input id="password" type="password" autocomplete="current-password" required placeholder="비밀번호"><button id="loginButton" type="submit">로그인</button></form>
  <p id="loginMessage" class="message" role="status" aria-live="polite"></p>
 </section>
 <section id="adminPanel" hidden>
@@ -27,13 +27,18 @@
   <div class="tabs" role="tablist" aria-label="회원 관리 기능">
    <button class="tab" id="pendingTab" type="button" role="tab" aria-selected="true" aria-controls="pendingView">가입 대기 <span class="counter" id="pendingCount"></span></button>
    <button class="tab" id="membersTab" type="button" role="tab" aria-selected="false" aria-controls="membersView">전체 회원 <span class="counter" id="membersCount"></span></button>
+   <button class="tab" id="suspendedTab" type="button" role="tab" aria-selected="false" aria-controls="suspendedView">이용 중지 <span class="counter" id="suspendedCount"></span></button>
    <button class="tab" id="calendarTab" type="button" role="tab" aria-selected="false" aria-controls="calendarView">🗓 이벤트 달력</button>
   </div>
   <section id="pendingView" role="tabpanel" aria-labelledby="pendingTab"><p class="muted">신규 가입 신청을 승인하거나 거절할 수 있습니다.</p><div id="pendingList" aria-live="polite"></div></section>
   <section id="membersView" role="tabpanel" aria-labelledby="membersTab" hidden>
    <div class="toolbar"><label class="inline-label" for="search">길드원 검색</label><input id="search" type="search" autocomplete="off" placeholder="아이디 또는 디마 닉네임 검색"><span id="countHint" class="muted"></span></div>
    <div id="memberList" aria-live="polite"></div>
-   <p class="note">일반 회원·운영진·부마스터·길드마스터 등급만 변경할 수 있습니다. 최고관리자는 변경할 수 없습니다.</p>
+   <p class="note">등급 변경·이용 중지는 본인보다 낮은 등급의 회원에게만 가능합니다. 최고관리자는 변경하거나 이용 중지할 수 없습니다.</p>
+  </section>
+  <section id="suspendedView" role="tabpanel" aria-labelledby="suspendedTab" hidden>
+    <p class="muted">관리자가 이용을 중지했거나 가입 신청이 거절된 계정입니다. 계정 기록은 삭제되지 않습니다.</p>
+    <div id="suspendedList" aria-live="polite"></div>
   </section>
   <section id="calendarView" role="tabpanel" aria-labelledby="calendarTab" hidden>
    <h2 style="margin-top:23px">🗓 이벤트 일정 관리</h2>
@@ -52,6 +57,9 @@ const AUTH_URL=PROJECT+'/functions/v1/blossom-auth';
 const ADMIN_URL=PROJECT+'/functions/v1/blossom-admin';
 const SESSION_KEY='blossom_test_auth_v1';
 const ROLES={site_owner:'최고관리자',guild_master:'길드마스터',vice_master:'부마스터',staff:'운영진',member:'일반 회원'};
+const MANAGERS=['staff','vice_master','guild_master','site_owner'];
+const LEVEL={member:1,staff:2,vice_master:3,guild_master:4,site_owner:5};
+let myRole='member';
 const CHANGEABLE_ROLES=['member','staff','vice_master','guild_master'];
 const $=id=>document.getElementById(id);
 let token='',busy=false,activeTab='pending',allMembers=[];
@@ -69,17 +77,18 @@ function showLogin(note=''){
  token='';$('loginPanel').hidden=false;$('adminPanel').hidden=true;$('password').value='';
  if(note)msg('loginMessage',note,true);
 }
-function showAdmin(name){$('loginPanel').hidden=true;$('adminPanel').hidden=false;$('welcome').textContent=name+' · 최고관리자';}
+function showAdmin(name,role){myRole=role;$('loginPanel').hidden=true;$('adminPanel').hidden=false;$('welcome').textContent=name+' · '+(ROLES[role]||role);}
 function saveSession(user,session){
  try{sessionStorage.setItem(SESSION_KEY,JSON.stringify({username:user.username,digimon_nickname:user.digimon_nickname,role:user.role,status:'approved',access_token:session.access_token,expires_at:session.expires_at||Math.floor(Date.now()/1000)+3600}));}catch{}
 }
-function session(){try{const s=JSON.parse(sessionStorage.getItem(SESSION_KEY)||'null');if(s&&s.role==='site_owner'&&s.status==='approved'&&typeof s.access_token==='string'&&Number(s.expires_at)>Date.now()/1000+20)return s;}catch{}return null;}
+function session(){try{const s=JSON.parse(sessionStorage.getItem(SESSION_KEY)||'null');if(s&&MANAGERS.includes(s.role)&&s.status==='approved'&&typeof s.access_token==='string'&&Number(s.expires_at)>Date.now()/1000+20)return s;}catch{}return null;}
 function switchTab(tab){
  activeTab=tab;
  $('pendingTab').setAttribute('aria-selected',String(tab==='pending'));
  $('membersTab').setAttribute('aria-selected',String(tab==='members'));
  $('calendarTab').setAttribute('aria-selected',String(tab==='calendar'));
- $('pendingView').hidden=tab!=='pending';$('membersView').hidden=tab!=='members';$('calendarView').hidden=tab!=='calendar';
+ $('suspendedTab').setAttribute('aria-selected',String(tab==='suspended'));
+ $('pendingView').hidden=tab!=='pending';$('membersView').hidden=tab!=='members';$('calendarView').hidden=tab!=='calendar';$('suspendedView').hidden=tab!=='suspended';
 }
 async function api(body){return post(ADMIN_URL,body,token);}
 function handleError(error){
@@ -91,8 +100,8 @@ async function reload(){
  $('refreshButton').disabled=true;
  msg('adminMessage','회원 정보를 불러오는 중...');
  try{
-  const [p,m]=await Promise.all([api({action:'pending'}),api({action:'members'})]);
-  renderPending(p.members||[]);allMembers=m.members||[];renderApproved();
+  const [p,m,s]=await Promise.all([api({action:'pending'}),api({action:'members'}),api({action:'suspended'})]);
+  renderPending(p.members||[]);allMembers=m.members||[];renderApproved();renderSuspended(s.members||[]);$('suspendedCount').textContent='('+String(s.total??s.members?.length??0)+')';
   $('membersCount').textContent='('+String(m.total??allMembers.length)+')';
   $('countHint').textContent=m.total>allMembers.length?'총 '+m.total+'명 · 처음 500명 표시':'총 '+(m.total??allMembers.length)+'명';
   msg('adminMessage','회원 목록을 갱신했습니다.');
@@ -112,6 +121,7 @@ function renderPending(members){
   actions.append(approve,reject);item.append(info,actions);root.append(item);
  }
 }
+function canManageRole(role){ return (LEVEL[myRole]||0)>(LEVEL[role]||999); }
 function renderApproved(){
  const root=$('memberList');root.replaceChildren();
  const keyword=$('search').value.trim().toLocaleLowerCase();
@@ -122,19 +132,45 @@ function renderApproved(){
   const info=document.createElement('div');const name=document.createElement('strong');name.textContent=m.digimon_nickname||m.username;
   const subtitle=document.createElement('small');subtitle.textContent='아이디: '+m.username+' · 현재 등급: '+(ROLES[m.role]||m.role);info.append(name,subtitle);
   const control=document.createElement('div');control.className='role-controls';
-  if(m.role==='site_owner'){
-   const pill=document.createElement('span');pill.className='pill';pill.textContent='✦ 최고관리자 · 변경 불가';control.append(pill);
+  if(!canManageRole(m.role)){
+   const pill=document.createElement('span');pill.className='pill';pill.textContent='등급 유지 · 상위 또는 동일 등급';control.append(pill);
   }else{
    const select=document.createElement('select');select.setAttribute('aria-label',m.username+' 회원 등급');
-   for(const role of CHANGEABLE_ROLES){const option=document.createElement('option');option.value=role;option.textContent=ROLES[role];select.append(option);}
+   for(const role of CHANGEABLE_ROLES.filter(x=>canManageRole(x))){const option=document.createElement('option');option.value=role;option.textContent=ROLES[role];select.append(option);}
    select.value=m.role;
    const change=document.createElement('button');change.type='button';change.textContent='등급 변경';change.disabled=true;
    select.addEventListener('change',()=>{change.disabled=busy||select.value===m.role;});
    change.addEventListener('click',()=>changeRole(m,select,change));
-   control.append(select,change);
+   const suspend=document.createElement('button');suspend.type='button';suspend.className='danger';suspend.textContent='이용 중지';
+   suspend.addEventListener('click',()=>changeAccess(m,false,suspend));
+   control.append(select,change,suspend);
   }
   item.append(info,control);root.append(item);
  }
+}
+function renderSuspended(members){
+ const root=$('suspendedList');root.replaceChildren();
+ if(!members.length){const empty=document.createElement('p');empty.className='empty';empty.textContent='이용 중지 또는 거절된 계정이 없습니다.';root.append(empty);return;}
+ for(const m of members){
+  const item=document.createElement('div');item.className='person';
+  const info=document.createElement('div');const title=document.createElement('strong');title.textContent=m.digimon_nickname||m.username;
+  const subtitle=document.createElement('small');subtitle.textContent='아이디: '+m.username+' · 등급: '+(ROLES[m.role]||m.role)+' · 이용 불가';info.append(title,subtitle);
+  const actions=document.createElement('div');actions.className='actions';
+  if(canManageRole(m.role)){
+   const restore=document.createElement('button');restore.type='button';restore.textContent='↻ 계정 활성화';
+   restore.addEventListener('click',()=>changeAccess(m,true,restore));actions.append(restore);
+  }else{const pill=document.createElement('span');pill.className='pill';pill.textContent='상위 등급 · 변경 불가';actions.append(pill);}
+  item.append(info,actions);root.append(item);
+ }
+}
+async function changeAccess(m,restore,button){
+ if(busy)return;
+ const verb=restore?'활성화':'이용 중지';
+ if(!confirm((m.digimon_nickname||m.username)+' ('+m.username+') 님의 사이트 이용을 '+verb+'할까요?\n'+(restore?'로그인 권한을 회복시킵니다.':'즉시 로그인이 차단됩니다. 숙제와 버프 기록은 삭제되지 않습니다.')))return;
+ busy=true;button.disabled=true;msg('adminMessage',verb+' 처리 중...');
+ try{const result=await api({action:restore?'restore':'suspend',member_id:m.id});busy=false;await reload();msg('adminMessage',result.message);}
+ catch(error){handleError(error);button.disabled=false;}
+ finally{busy=false;}
 }
 async function review(m,decision,approve,reject){
  if(busy)return;
@@ -161,18 +197,19 @@ $('loginForm').addEventListener('submit',async event=>{
  busy=true;$('loginButton').disabled=true;msg('loginMessage','로그인 확인 중...');
  try{
   const d=await post(AUTH_URL,{action:'login',username:$('username').value.trim(),password:$('password').value});
-  if(d.user?.role!=='site_owner'||d.user?.status!=='approved'||!d.session?.access_token)throw Error('승인된 최고관리자 계정만 접근할 수 있습니다.');
-  token=d.session.access_token;saveSession(d.user,d.session);showAdmin(d.user.digimon_nickname||d.user.username);await reload();
+  if(!MANAGERS.includes(d.user?.role)||d.user?.status!=='approved'||!d.session?.access_token)throw Error('승인된 운영진 이상 계정만 접근할 수 있습니다.');
+  token=d.session.access_token;saveSession(d.user,d.session);showAdmin(d.user.digimon_nickname||d.user.username,d.user.role);await reload();
  }catch(error){if(!$('adminPanel').hidden)handleError(error);else msg('loginMessage',error.message,true);}
  finally{busy=false;$('loginButton').disabled=false;$('password').value='';}
 });
 $('pendingTab').addEventListener('click',()=>switchTab('pending'));
 $('membersTab').addEventListener('click',()=>switchTab('members'));
 $('calendarTab').addEventListener('click',()=>switchTab('calendar'));
+$('suspendedTab').addEventListener('click',()=>switchTab('suspended'));
 $('search').addEventListener('input',renderApproved);
 $('refreshButton').addEventListener('click',reload);
 $('logoutButton').addEventListener('click',()=>{try{sessionStorage.removeItem(SESSION_KEY);}catch{}showLogin();$('loginForm').reset();msg('loginMessage','로그아웃했습니다.');});
-(async()=>{const s=session();if(!s)return;token=s.access_token;showAdmin(s.digimon_nickname||s.username);await reload();})();
+(async()=>{const s=session();if(!s)return;token=s.access_token;showAdmin(s.digimon_nickname||s.username,s.role);await reload();})();
 </script>
 </body>
 </html>

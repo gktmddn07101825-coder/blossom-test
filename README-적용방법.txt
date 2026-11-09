@@ -1,21 +1,34 @@
-BLOSSOM 홈 대시보드 v9 — 메인 홈페이지 숙제/버프 현황 연동
+BLOSSOM 관리 권한 통합 v10 - 적용 순서 (blossom-test 전용)
 
-적용할 저장소: blossom-test (운영 blossom-home 수정 금지)
+1) Supabase > Edge Functions > blossom-admin > Code > index.ts
+   ZIP/supabase/blossom-admin-index.ts 전체로 교체 -> Deploy
+   Verify JWT with legacy secret = OFF 기존 유지
 
-1. 기존 index.html을 ZIP 속 index.html로 교체
-2. 새 파일 home-status.js를 index.html과 같은 최상위 폴더에 업로드
-3. GitHub에서 Commit changes
-4. 로그인 후 https://gktmddn07101825-coder.github.io/blossom-test/?v=9 열기
+2) Supabase > Edge Functions > blossom-events > Code > index.ts
+   ZIP/supabase/blossom-events-index.ts 전체로 교체 -> Deploy
+   운영진/부마스터도 모든 공지 수정·삭제 가능해집니다.
 
-변경 내용
-- 홈 우측 '나의 길드 현황'에 실제 계정별 일일/주간 숙제 완료 현황
-- 일일/주간 진행률 바 표시, 완료 수치는 서버의 현재 기간/개인별 설정 기준
-- 실행 중인 버프 이름과 초 단위 남은 시간(최대 3개, 추가 항목 개수 표시)
-- 로그인 세션 없으면 로그인 안내
-- 1분마다 서버 최신 정보 갱신, 홈으로 돌아오거나 탭 활성화하면 새로고침
-- 이벤트·공지, 관리자, 숙제, 버프 원본 페이지는 수정하지 않음
+3) GitHub > blossom-test 저장소 (main 브랜치):
+   admin.html 기존 파일 교체
+   member-nav.js 기존 파일 교체
+   Commit changes
+   index.html, event.html, todo.html, timer.html 변경하지 마세요.
 
-참고
-- 메인 화면은 상태 조회만 합니다. 숙제·버프 설정 변경은 각 페이지에서 하세요.
-- 종료 알림음은 버프 타이머 페이지가 열린 상태에서만 재생됩니다.
-- 배포 후 실제 서버 동작 테스트는 사용자 환경에서 진행해야 합니다.
+4) 테스트
+   - 일반회원으로 로그인: 관리자 센터 버튼 없음
+   - 운영진으로 로그인: 관리자 센터 표시, 가입 신청 승인/거절 가능
+   - 회원 목록: 하위 직급 회원만 등급 변경/이용 중지
+   - 이용 중지 회원은 로그인 불가, 데이터/계정 보존
+   - '이용 중지' 탭에서 복구 가능(가입 거절한 계정도 포함)
+   - 운영진으로 타인 공지 수정/삭제 가능
+
+직급 순위: 최고관리자 > 길드마스터 > 부마스터 > 운영진 > 일반회원
+동급 및 상위 직급은 등급 변경/이용 중지 불가능. 본인 및 최고관리자 보호.
+
+중요:
+ - '이용 중지'는 영구 삭제가 아닙니다. 기존 profiles.status의 rejected로 설정하여 승인 회원 인증을 거부합니다.
+ - 기존 가입 거절도 rejected라서 '이용 중지' 탭에 같이 나옵니다.
+ - 완전한 개인정보/계정 삭제 기능은 아직 포함되지 않습니다.
+ - 관리자 등록/회원 정지는 서버에서 로그인 토큰과 승인된 등급으로 검증합니다.
+ - 프로젝트가 현재 기존 profiles.status에 approved/pending/rejected를 쓰는 구조에 맞췄습니다.
+ - 실제 배포 및 변경 테스트는 아직 진행하지 않았습니다.
