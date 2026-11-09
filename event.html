@@ -1,17 +1,193 @@
-<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>BLOSSOM | 이벤트 & 공지</title><style>body{background:#0b1024;color:#f5f3ff;font-family:Malgun Gothic,Arial,sans-serif;min-height:100vh;display:grid;place-items:center;margin:0;padding:20px}main{max-width:650px;padding:40px;background:#1a2246;border:1px solid #7568cb;border-radius:22px;text-align:center;box-shadow:0 0 50px #6148c333}h1{color:#f5b4e4}p{line-height:1.8;color:#cbd5ff}a{display:inline-block;padding:12px 22px;background:#7667de;color:white;text-decoration:none;border-radius:10px}</style><style id="blossom-access-style">
-html:not([data-blossom-access="approved"]) body > :not(#blossom-access-gate) { visibility: hidden !important; }
-#blossom-access-gate { position:fixed; inset:0; z-index:2147483647; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; background:radial-gradient(circle at 50% 0%,#33215e,#0a1025 70%); color:#f5f3ff; font-family:'Malgun Gothic',sans-serif; text-align:center; visibility:visible !important; }
-#blossom-access-gate .gate-card { width:min(440px,100%); background:linear-gradient(145deg,#24254b,#141b37); border:1px solid #8475d0; border-radius:20px; padding:34px 25px; box-shadow:0 15px 45px #0008; }
-#blossom-access-gate h2 { color:#ffc9f5; font-size:25px; margin:12px 0; }
-#blossom-access-gate p { line-height:1.8; color:#d0d7f6; }
-#blossom-access-gate .gate-actions { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:25px; }
-#blossom-access-gate .gate-actions a, #blossom-access-gate button { background:#6553b6; border:1px solid #a89af0; border-radius:10px; color:#fff; padding:13px 18px; font-size:14px; font-weight:800; text-decoration:none; cursor:pointer; font-family:inherit; }
-#blossom-access-gate button { background:#293459; }
-#blossom-access-gate button:disabled { opacity:.55; cursor:wait; }
-html[data-blossom-access="approved"] #blossom-access-gate { display:none !important; }
-</style></head><body><div id="blossom-access-gate" role="status" aria-live="polite"><div class="gate-card">
-  <div style="font-size:33px;color:#f7b2f2">✿ BLOSSOM</div>
-  <h2>길드원 전용 공간</h2>
-  <p data-gate-message>회원 확인을 준비하고 있어요...</p>
-  <div class="gate-actions"><a data-gate-login href="auth.html#login">로그인 / 회원가입</a><button type="button" data-gate-retry>다시 확인</button><a href="index.html">홈으로</a></div>
-</div></div><script defer src="member-gate.js"></script><main><div>🌸 BLOSSOM DIGITAL WORLD</div><h1>이벤트 & 공지</h1><p>기존 공용 일정과 연결하지 않은 디자인 테스트 화면입니다.<br>정식 적용 시 기존 기능과 데이터를 안전하게 연결할 예정입니다.</p><a href="index.html">← 메인으로 돌아가기</a></main></body></html>
+<!doctype html>
+<html lang="ko" data-blossom-access="checking">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0a1025">
+<title>BLOSSOM | 이벤트 & 공지</title>
+<style>
+:root{--bg:#090d20;--panel:#161c3b;--pink:#f3a4f4;--blue:#76ddff;--text:#f5f3ff;--muted:#bbc3e8}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;color:var(--text);font-family:'Malgun Gothic','Apple SD Gothic Neo',sans-serif;background:radial-gradient(ellipse at 50% 0,#26225b 0,transparent 55%),var(--bg)}a{color:inherit;text-decoration:none}[hidden]{display:none!important}
+.wrap{width:min(1070px,calc(100% - 36px));margin:auto}.top{background:#10142ee8;border-bottom:1px solid #7774d66b;backdrop-filter:blur(16px)}.nav{height:78px;display:flex;justify-content:space-between;align-items:center;gap:18px}.brand{font-size:27px;font-weight:900;font-style:italic;color:#ffd4ff;text-shadow:0 0 17px #c75cf5}.brand small{display:block;font-size:10px;letter-spacing:2.5px;color:#bfc5f6;font-style:normal}.back{font-weight:700;font-size:14px;color:#adf1ff}
+main{padding:42px 0 90px}.eyebrow{font-size:12px;letter-spacing:3px;color:var(--blue);font-weight:800}.intro h1{font-size:clamp(32px,5vw,52px);margin:13px 0 12px;font-weight:900}.intro p{color:var(--muted);line-height:1.8;max-width:770px;margin:0}.panel{background:linear-gradient(135deg,#24254b,#131b38);border:1px solid #776bc4;border-radius:17px;box-shadow:0 9px 28px #02041470;padding:24px;margin-top:25px}.panel h2{margin:0 0 14px;font-size:21px}.status{min-height:25px;color:#c1e9ff;font-size:13px;margin:20px 1px}.status.error{color:#ffb2c9}.status.success{color:#91ffcc}.actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}button{font:inherit;font-weight:800;font-size:14px;border-radius:10px;border:1px solid #a38ce7;color:#fff;background:linear-gradient(110deg,#6958bd,#b66ed7);padding:12px 17px;cursor:pointer}button.subtle{background:#1b244a;border:1px solid #6369aa}button.danger{background:#682d57;border:1px solid #bd7ba8}button:disabled{opacity:.5;cursor:wait}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-top:24px}.tabs button{background:#161d3e;color:#dbe0ff;border-color:#565e9f}.tabs button[aria-pressed=true]{background:linear-gradient(110deg,#6958bd,#b66ed7);border-color:#edb6ff}
+#feed{display:grid;gap:16px;margin-top:20px}.entry{padding:22px 24px;background:linear-gradient(135deg,#22244a,#121b35);border:1px solid #6661ae;border-radius:16px}.entry-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap}.entry h2{font-size:20px;margin:0;line-height:1.5;overflow-wrap:anywhere}.meta{font-size:12px;color:#c0c9eb;margin-top:9px;line-height:1.65}.kind{display:inline-block;border:1px solid #b58bc9;background:#48305d;color:#ffc9ed;border-radius:100px;padding:4px 9px;font-size:12px;font-weight:900;margin-right:8px}.kind.event{border-color:#71cbdc;background:#163e5a;color:#a4f2ff}.entry .content{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.85;font-size:14px;color:#ebeafe;margin:18px 0 8px}.event-date{font-size:13px;font-weight:800;color:#a0edff;margin-top:13px}.entry .actions button{font-size:12px;padding:8px 11px}.empty{text-align:center;border:1px dashed #6661ae;border-radius:16px;padding:40px 16px;color:#c5cdf2}
+.form-grid{display:grid;gap:13px}.form-grid label{display:block;font-weight:800;color:#dbe6ff;font-size:13px;margin:0 0 6px}input,select,textarea{width:100%;border:1px solid #6b68a9;background:#0e1632;color:white;border-radius:10px;padding:12px 13px;font:inherit;font-size:14px;outline-offset:2px}input:focus,textarea:focus,select:focus{outline:2px solid #83dfff}textarea{min-height:180px;resize:vertical;line-height:1.7}.field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}.hint{font-size:12px;color:var(--muted);line-height:1.65}.head-row{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+html:not([data-blossom-access="approved"]) body > :not(#blossom-access-gate){visibility:hidden!important}
+#blossom-access-gate{position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;padding:20px;background:radial-gradient(circle at 50% 0%,#33215e,#0a1025 70%);color:#f5f3ff;text-align:center;visibility:visible!important}
+#blossom-access-gate .gate-card{width:min(440px,100%);background:linear-gradient(145deg,#24254b,#141b37);border:1px solid #8475d0;border-radius:20px;padding:34px 25px;box-shadow:0 15px 45px #0008}
+#blossom-access-gate h2{color:#ffc9f5;font-size:25px;margin:12px 0}#blossom-access-gate p{line-height:1.8;color:#d0d7f6}
+#blossom-access-gate .gate-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:25px}
+#blossom-access-gate .gate-actions a,#blossom-access-gate button{display:inline-block;background:#6553b6;border:1px solid #a89af0;border-radius:10px;color:#fff;padding:13px 18px;font-size:14px;font-weight:800;text-decoration:none;cursor:pointer;font-family:inherit}
+#blossom-access-gate button{background:#293459}#blossom-access-gate button:disabled{opacity:.55;cursor:wait}
+html[data-blossom-access="approved"] #blossom-access-gate{display:none!important}
+@media(max-width:640px){.nav{height:70px}.brand{font-size:21px}.back{font-size:12px}.panel,.entry{padding:18px}.field-row{grid-template-columns:1fr}.intro h1{font-size:33px}}
+</style>
+<script defer src="member-gate.js"></script>
+</head>
+<body>
+<div id="blossom-access-gate" role="status" aria-live="polite"><div class="gate-card">
+ <div style="font-size:33px;color:#f7b2f2">✿ BLOSSOM</div><h2>길드원 전용 공간</h2>
+ <p data-gate-message>회원 확인을 준비하고 있어요...</p>
+ <div class="gate-actions"><a data-gate-login href="auth.html#login">로그인 / 회원가입</a><button type="button" data-gate-retry>다시 확인</button><a href="index.html">홈으로</a></div>
+</div></div>
+<header class="top"><nav class="wrap nav"><a class="brand" href="index.html">✿ BLOSSOM<small>DIGITAL WORLD GUILD</small></a><a class="back" href="index.html">← 홈페이지</a></nav></header>
+<main class="wrap">
+ <section class="intro"><div class="eyebrow">BLOSSOM COMMUNITY</div><h1>✦ 이벤트 & 공지</h1><p>블로썸 길드의 공지와 이벤트 일정을 한곳에서 확인하세요. 모든 승인 회원이 읽을 수 있고, 운영진 이상은 글을 등록할 수 있습니다.</p></section>
+ <p id="boardStatus" class="status" aria-live="polite">길드 게시판을 불러오는 중...</p>
+ <section id="editor" class="panel" hidden>
+  <div class="head-row"><h2 id="editorTitle">✎ 새 게시물 작성</h2><button id="cancelEdit" type="button" class="subtle" hidden>수정 취소</button></div>
+  <form id="postForm" class="form-grid">
+   <div class="field-row"><div><label for="postKind">게시물 종류</label><select id="postKind"><option value="notice">📢 공지사항</option><option value="event">🗓 이벤트</option></select></div><div id="dateField" hidden><label for="eventAt">이벤트 날짜 / 시간 (선택)</label><input id="eventAt" type="datetime-local"></div></div>
+   <div><label for="postTitle">제목</label><input id="postTitle" type="text" required minlength="2" maxlength="100" placeholder="길드원에게 알릴 제목"></div>
+   <div><label for="postContent">내용</label><textarea id="postContent" required maxlength="4000" placeholder="공지 또는 이벤트 내용을 입력해 주세요."></textarea></div>
+   <div class="actions"><button id="submitPost" type="submit">게시물 등록</button><span class="hint">운영진 이상만 작성 · 게시물은 회원에게만 공개</span></div>
+  </form>
+ </section>
+ <section aria-label="게시물 목록">
+  <div class="tabs" aria-label="게시물 필터"><button class="filter" type="button" data-filter="all" aria-pressed="true">전체</button><button class="filter" type="button" data-filter="notice" aria-pressed="false">📢 공지</button><button class="filter" type="button" data-filter="event" aria-pressed="false">🗓 이벤트</button><button id="refreshBoard" class="subtle" type="button">↻ 새로고침</button></div>
+  <div id="feed" aria-live="polite"><p class="empty">게시물을 불러오는 중...</p></div>
+ </section>
+</main>
+<script>
+(() => {
+  'use strict';
+  const URL = 'https://hweouohzkwqhiwwsjlxu.supabase.co/functions/v1/blossom-events';
+  const SESSION_KEY = 'blossom_test_auth_v1';
+  const $ = id => document.getElementById(id);
+  let posts = [], viewerId = '', canPost = false, manageAny = false, filter = 'all', editing = null, busy = false;
+  function message(text, isError = false) {
+    $('boardStatus').textContent = text;
+    $('boardStatus').className = 'status ' + (isError ? 'error' : 'success');
+  }
+  function accessToken() {
+    try {
+      const session = JSON.parse(sessionStorage.getItem(SESSION_KEY) || 'null');
+      if (session && session.access_token && Number(session.expires_at) > Date.now() / 1000 + 10) return session.access_token;
+    } catch (_) {}
+    return '';
+  }
+  async function api(body) {
+    const token = accessToken();
+    if (!token) throw Error('로그인이 만료되었습니다. 다시 로그인해 주세요.');
+    const options = { method: body ? 'POST' : 'GET', headers: { Authorization: 'Bearer ' + token }, cache: 'no-store' };
+    if (body) { options.headers['Content-Type'] = 'application/json'; options.body = JSON.stringify(body); }
+    const res = await fetch(URL, options);
+    let data;
+    try { data = await res.json(); } catch (_) { throw Error('서버 응답을 읽지 못했습니다.'); }
+    if (!res.ok || !data.success) throw Error(data.message || '요청에 실패했습니다.');
+    return data;
+  }
+  function node(tag, className, text) {
+    const el = document.createElement(tag);
+    if (className) el.className = className;
+    if (text !== undefined) el.textContent = text;
+    return el;
+  }
+  function dateLabel(iso) {
+    if (!iso) return '';
+    const date = new Date(iso);
+    return Number.isFinite(date.getTime()) ? date.toLocaleString('ko-KR', { timeZone: 'Asia/Seoul', dateStyle: 'medium', timeStyle: 'short' }) : '';
+  }
+  function render() {
+    const root = $('feed'); root.replaceChildren();
+    const visible = posts.filter(p => filter === 'all' || p.kind === filter);
+    if (!visible.length) { root.append(node('p', 'empty', '아직 등록된 ' + (filter === 'all' ? '게시물이' : filter === 'notice' ? '공지사항이' : '이벤트가') + ' 없습니다.')); return; }
+    for (const p of visible) {
+      const card = node('article', 'entry');
+      const head = node('div', 'entry-head');
+      const info = node('div');
+      const title = node('h2');
+      const kind = node('span', 'kind' + (p.kind === 'event' ? ' event' : ''), p.kind === 'event' ? '이벤트' : '공지');
+      title.append(kind, document.createTextNode(p.title));
+      const meta = node('div', 'meta', '작성자: ' + p.author_name + ' · ' + dateLabel(p.created_at));
+      info.append(title, meta); head.append(info);
+      const isOwner = p.author_id === viewerId;
+      if (canPost && (manageAny || isOwner)) {
+        const actions = node('div', 'actions');
+        const edit = node('button', 'subtle', '수정'); edit.type = 'button';
+        edit.addEventListener('click', () => beginEdit(p));
+        const remove = node('button', 'danger', '삭제'); remove.type = 'button';
+        remove.addEventListener('click', () => deletePost(p));
+        actions.append(edit, remove); head.append(actions);
+      }
+      card.append(head);
+      if (p.kind === 'event' && p.event_at) card.append(node('div', 'event-date', '🗓 행사 일정: ' + dateLabel(p.event_at)));
+      card.append(node('div', 'content', p.content));
+      root.append(card);
+    }
+  }
+  function updateKind() { $('dateField').hidden = $('postKind').value !== 'event'; }
+  function resetEditor() {
+    editing = null;
+    $('postForm').reset();
+    $('editorTitle').textContent = '✎ 새 게시물 작성';
+    $('submitPost').textContent = '게시물 등록';
+    $('cancelEdit').hidden = true;
+    updateKind();
+  }
+  function beginEdit(post) {
+    if (!canPost) return;
+    editing = post.id;
+    $('postKind').value = post.kind;
+    $('postTitle').value = post.title;
+    $('postContent').value = post.content;
+    if (post.event_at) {
+      const d = new Date(post.event_at);
+      // datetime-local input must be local clock time, not UTC.
+      const local = new Date(d.getTime() - d.getTimezoneOffset() * 60000);
+      $('eventAt').value = local.toISOString().slice(0, 16);
+    } else $('eventAt').value = '';
+    $('editorTitle').textContent = '✎ 게시물 수정';
+    $('submitPost').textContent = '수정 저장';
+    $('cancelEdit').hidden = false;
+    updateKind();
+    $('editor').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  async function loadBoard() {
+    if (busy) return;
+    busy = true; $('refreshBoard').disabled = true;
+    message('게시물을 불러오는 중...');
+    try {
+      const data = await api();
+      posts = data.posts || []; viewerId = data.viewer_id;
+      canPost = data.can_post === true; manageAny = data.can_manage_any === true;
+      $('editor').hidden = !canPost;
+      render(); message('총 ' + posts.length + '개의 게시물을 확인했습니다.');
+    } catch (err) { message(err.message || '게시물을 불러오지 못했습니다.', true); }
+    finally { busy = false; $('refreshBoard').disabled = false; }
+  }
+  async function deletePost(post) {
+    if (busy || !confirm('「' + post.title + '」 게시물을 삭제할까요?')) return;
+    busy = true; message('게시물 삭제 중...');
+    try { const result = await api({ action: 'delete', post_id: post.id }); resetEditor(); busy = false; await loadBoard(); message(result.message); }
+    catch (err) { message(err.message || '삭제에 실패했습니다.', true); }
+    finally { busy = false; }
+  }
+  $('postForm').addEventListener('submit', async event => {
+    event.preventDefault(); if (busy || !canPost) return;
+    const kind = $('postKind').value;
+    const title = $('postTitle').value.trim();
+    const content = $('postContent').value.trim();
+    const rawDate = $('eventAt').value;
+    const payload = { action: editing ? 'update' : 'create', kind, title, content,
+      event_at: kind === 'event' && rawDate ? new Date(rawDate).toISOString() : null };
+    if (editing) payload.post_id = editing;
+    busy = true; $('submitPost').disabled = true; message('게시물 저장 중...');
+    try { const result = await api(payload); resetEditor(); busy = false; await loadBoard(); message(result.message); }
+    catch (err) { message(err.message || '저장에 실패했습니다.', true); }
+    finally { busy = false; $('submitPost').disabled = false; }
+  });
+  $('postKind').addEventListener('change', updateKind);
+  $('cancelEdit').addEventListener('click', resetEditor);
+  $('refreshBoard').addEventListener('click', loadBoard);
+  document.querySelectorAll('.filter').forEach(button => button.addEventListener('click', () => {
+    filter = button.dataset.filter;
+    document.querySelectorAll('.filter').forEach(b => b.setAttribute('aria-pressed', String(b === button)));
+    render();
+  }));
+  window.addEventListener('blossom:authorized', loadBoard);
+  if (document.documentElement.dataset.blossomAccess === 'approved') loadBoard();
+})();
+</script>
+</body>
+</html>
