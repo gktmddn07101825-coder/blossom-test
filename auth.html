@@ -47,7 +47,7 @@
     <p class="welcome" id="doneText"></p>
     <div id="profileBox" class="profile hidden"><dl><dt>아이디</dt><dd id="profileUsername"></dd><dt>디마 닉네임</dt><dd id="profileNickname"></dd><dt>회원 상태</dt><dd><span class="badge">승인 완료</span></dd></dl></div>
     <p id="doneDescription" class="hint" style="margin-top:18px"></p>
-    <div class="actions"><a href="index.html">⌂ 홈페이지로</a><a id="adminLink" class="hidden" href="admin.html">⚙ 관리자 센터</a><button id="backToLogin" class="hidden" type="button">로그인 화면</button><button id="logout" class="logout hidden" type="button">로그아웃</button></div>
+    <div class="actions"><a href="index.html">⌂ 홈페이지로</a><a id="returnToPage" class="hidden" href="index.html">↩ 이용하던 페이지로</a><a id="adminLink" class="hidden" href="admin.html">⚙ 관리자 센터</a><button id="backToLogin" class="hidden" type="button">로그인 화면</button><button id="logout" class="logout hidden" type="button">로그아웃</button></div>
    </div>
    <p class="fine">이 페이지는 BLOSSOM 테스트 서버에 연결되어 있습니다. 기존 홈페이지의 숙제·타이머 기능은 변경되지 않습니다.</p>
   </section>
@@ -59,6 +59,8 @@
 // Supabase 공개 Edge Function 주소: 비밀 키를 HTML에 넣지 마세요.
 const AUTH_URL='https://hweouohzkwqhiwwsjlxu.supabase.co/functions/v1/blossom-auth';
 const SESSION_KEY='blossom_test_auth_v1';
+const NEXT_PAGE = (new URLSearchParams(location.search).get('next') || '');
+const SAFE_NEXT = ['todo.html', 'timer.html', 'event.html'].includes(NEXT_PAGE) ? NEXT_PAGE : '';
 const $=id=>document.getElementById(id);
 let busy=false;
 function setMessage(id,content,isError=false){const el=$(id);el.textContent=content;el.className='message '+(isError?'error':'success');}
@@ -99,7 +101,9 @@ function showLoggedIn(user){
  $('formsArea').classList.add('hidden');$('doneArea').classList.remove('hidden');
  $('doneTitle').textContent='로그인 완료 ✿';
  $('doneText').textContent=(user.digimon_nickname||user.username||'길드원')+'님, BLOSSOM에 오신 걸 환영합니다!';
- $('doneDescription').textContent='회원 인증이 완료되었습니다. 테스트 홈페이지로 이동할 수 있어요.';
+ $('doneDescription').textContent=SAFE_NEXT?'로그인이 완료됐습니다. 이용하던 페이지로 돌아갈 수 있어요.':'회원 인증이 완료되었습니다. 테스트 홈페이지로 이동할 수 있어요.';
+ $('returnToPage').classList.toggle('hidden', !SAFE_NEXT);
+ if (SAFE_NEXT) $('returnToPage').href=SAFE_NEXT;
  $('profileUsername').textContent=user.username||'-';$('profileNickname').textContent=user.digimon_nickname||'-';
  $('profileBox').classList.remove('hidden');
  $('adminLink').classList.toggle('hidden',user.role!=='site_owner');
@@ -110,7 +114,7 @@ function showRegistered(username){
  $('doneTitle').textContent='가입 신청 완료! ✿';
  $('doneText').textContent=username+'님, BLOSSOM 가입 신청이 접수되었습니다.';
  $('doneDescription').textContent='지금은 관리자 승인 대기 상태예요. 관리자가 승인한 뒤 로그인해 주세요.';
- $('profileBox').classList.add('hidden');$('adminLink').classList.add('hidden');
+ $('profileBox').classList.add('hidden');$('adminLink').classList.add('hidden');$('returnToPage').classList.add('hidden');
  $('logout').classList.add('hidden');$('backToLogin').classList.remove('hidden');
 }
 $('loginForm').addEventListener('submit',async event=>{
