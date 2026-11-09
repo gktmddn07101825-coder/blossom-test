@@ -34,7 +34,7 @@ html:not([data-blossom-access="approved"]) body > :not(#blossom-access-gate){vis
 @media(max-width:820px){.todo-grid{grid-template-columns:1fr}.form-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.form-grid .form-actions{grid-column:1/-1}.form-grid .form-actions .btn{flex:1}}
 @media(max-width:580px){.wrap{padding:0 14px}.nav{flex-wrap:wrap;padding:13px 0}.navlinks{gap:11px}.overview{grid-template-columns:repeat(2,minmax(0,1fr))}.overview .summary:last-child{grid-column:1/-1}.summary{padding:15px}.panel{padding:16px}.task{padding:15px}.task-top{flex-wrap:wrap}.form-grid{grid-template-columns:1fr}.form-grid .form-actions{grid-column:auto}.toolbar{align-items:flex-start}.headline{margin-top:5px}}
 </style>
-</head>
+<link rel="stylesheet" href="blossom-skins.css"></head>
 <body>
 <div id="blossom-access-gate" role="status" aria-live="polite">
   <div class="gate-card"><div style="font-size:32px;color:#ffd5f6">✿ BLOSSOM</div><h2>길드원 전용 공간</h2>
@@ -42,7 +42,7 @@ html:not([data-blossom-access="approved"]) body > :not(#blossom-access-gate){vis
     <div class="gate-actions"><a href="auth.html#login" data-gate-login>로그인 / 회원가입</a><button type="button" data-gate-retry>다시 확인</button><a href="index.html">홈으로</a></div>
   </div>
 </div>
-<header class="top"><div class="wrap nav"><a class="brand" href="index.html">✿ BLOSSOM<small>DIGITAL WORLD GUILD</small></a><nav class="navlinks"><a href="index.html">⌂ 홈</a><a href="event.html">▦ 이벤트</a><a href="timer.html">◷ 버프 타이머</a><a href="auth.html">♙ 내 계정</a></nav></div></header>
+<header class="top"><div class="wrap nav"><a class="brand" href="index.html">✿ BLOSSOM<small>DIGITAL WORLD GUILD</small></a><nav class="navlinks"><a href="index.html">⌂ 홈</a><a href="event.html">▦ 이벤트</a><a href="timer.html">◷ 버프 타이머</a><a href="shop.html">🌸 포인트 상점</a><a href="auth.html">♙ 내 계정</a></nav></div></header>
 <main class="wrap">
   <div class="headline"><div><div class="eyebrow">GUILD TASK MANAGER</div><h1>☑ 숙제 체크리스트</h1><p class="lead">길드 공용 숙제 + 나만의 개인 숙제. 횟수와 진행도는 내 계정에 안전하게 저장돼요.</p></div><span class="badge" id="ownerBadge">길드원 정보 확인 중</span></div>
   <section class="overview" aria-label="숙제 통계"><div class="summary"><label>오늘의 숙제</label><strong id="dailyNumber">0 / 0</strong><div class="meter"><div class="fill" id="dailyBar"></div></div><small>매일 00:00 초기화 (한국 시간)</small></div><div class="summary"><label>이번 주 숙제</label><strong id="weeklyNumber">0 / 0</strong><div class="meter"><div class="fill" id="weeklyBar"></div></div><small>매주 화요일 00:00 초기화</small></div><div class="summary"><label>다음 초기화</label><strong id="nextReset">--:--</strong><small id="resetHint">한국 시간 기준</small></div></section>
@@ -53,4 +53,4 @@ html:not([data-blossom-access="approved"]) body > :not(#blossom-access-gate){vis
 </main>
 <footer class="footer"><div class="wrap">✿ BLOSSOM DIGITAL WORLD GUILD · 모든 숙제 기록은 로그인 계정별로 저장됩니다.</div></footer>
 <script defer src="member-gate.js"></script><script defer src="todo-app.js"></script>
-</body></html>
+<script defer src="blossom-skin.js"></script></body></html>
