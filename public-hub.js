@@ -45,7 +45,7 @@
     joinKind.value=d.user.can_review_general?'general':'guild';
     const sel=$('roomSelect');sel.replaceChildren();
     for(const r of d.rooms){const o=el('option','',r==='blossom'?'🌸 BLOSSOM · 길드 전용':'🎮 우비테이머 · 전체 테이머');o.value=r;sel.append(o);}
-    let savedRoom='';try{savedRoom=localStorage.getItem(ROOM_PREF_KEY)||'';}catch{}
+    let savedRoom='';try{savedRoom=localStorage.getItem('blossom_selected_room_v18_'+d.user.id)||'';}catch{}
     // Server-verified membership is the only source of room authorization.
     state.room=d.rooms.includes(savedRoom)?savedRoom:d.user.default_room;
     if(!d.rooms.includes(state.room))state.room='ubitetamer';
@@ -280,7 +280,7 @@
     const requested=$('roomSelect').value;
     if(requested==='blossom'&&!state.user?.can_view_guild)return;
     state.room=requested;
-    try{localStorage.setItem(ROOM_PREF_KEY,state.room);}catch{}
+    try{localStorage.setItem(ROOM_PREF_KEY,state.room);if(state.user?.id)localStorage.setItem('blossom_selected_room_v18_'+state.user.id,state.room);}catch{}
     renderRoom();
     if(state.tab==='chat')await loadChat();if(state.tab==='posts')await loadPosts();if(state.tab==='reports')await loadReports();if(state.tab==='applications')await loadJoins();
     await setupRealtime();
